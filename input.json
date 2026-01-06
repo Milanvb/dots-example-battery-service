@@ -1,17 +1,12 @@
 {
     "name": "test",
-    "esdl_type" : "EConnection",
+    "esdl_type" : "Battery",
     "description" : "this is a test description",
     "relevant_links" : [
         {
-            "name" : "test link",
-            "url" : "https://example.com/test",
-            "description" : "this is a test link"
-        },
-        {
-            "name" : "another test link",
-            "url" : "https://example.com/anothertest",
-            "description" : "this is another link"
+            "name" : "Battery ESDL documentation",
+            "url" : "https://energytransition.github.io/#router/doc-content/687474703a2f2f7777772e746e6f2e6e6c2f6573646c/Battery.html",
+            "description" : "Details on the Battery esdl type"
         }
     ],
     "calculations" : [
@@ -22,40 +17,25 @@
             "offset_in_seconds" : 0,
             "inputs" : [
                 {
-                    "name" : "input1",
+                    "name" : "potential_active_power",
                     "esdl_type" : "PVInstallation",
-                    "data_type" : "DOUBLE",
-                    "description" : "input 1 description",
-                    "unit" : "K"
-                }
-            ],
-            "outputs" : [
-                {
-                    "name" : "output1",
-                    "data_type" : "DOUBLE",
-                    "description" : "output 1 description",
+                    "data_type" : "VECTOR",
+                    "description" : "The potential active power produced by the PV installation for the coming 12 hours based upon the weather.",
                     "unit" : "W"
                 },
                 {
-                    "name" : "output2",
-                    "data_type" : "DOUBLE",
-                    "description" : "output 2 description",
-                    "unit" : "W"
+                    "name" : "potential_active_power",
+                    "esdl_type" : "EnvironmentalProfiles",
+                    "data_type" : "VECTOR",
+                    "description" : "The expected solar irradiance for the coming 12 hours as predicted by the weather service.",
+                    "unit" : "Wm2"
                 }
-            ]
-        },
-        {
-            "name": "test calculation 2",
-            "description" : "test",
-            "time_period_in_seconds" : 900,
-            "offset_in_seconds" : 100,
-            "inputs" : [
             ],
             "outputs" : [
                 {
-                    "name" : "output3",
+                    "name" : "active_power",
                     "data_type" : "DOUBLE",
-                    "description" : "output 3 description",
+                    "description" : "The amount of active power produced by the Battery",
                     "unit" : "W"
                 }
             ]
