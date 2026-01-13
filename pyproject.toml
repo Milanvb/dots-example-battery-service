@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "ExampleCalculationService"
+name = "ExampleBatteryService"
 version = "0.0.1"
 authors = [
   { name="Example Author", email="author@example.com" },
@@ -18,7 +18,7 @@ classifiers = [
 ]
 dependencies = [
   'helics==3.6.1',
-  'dots_infrastructure==1.0.0'
+  'dots_infrastructure==1.0.5'
 ]
 
 [project.urls]
