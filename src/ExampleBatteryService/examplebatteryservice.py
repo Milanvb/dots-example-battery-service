@@ -58,6 +58,8 @@ class ExampleBatteryService(ExampleBatteryServiceBase):
         if amount_discharged > 0 and self.current_charge[esdl_id] == 0:
             consumption_w = pv_active_power_w - demand_active_power_w + amount_discharged
 
+        self.influx_connector.set_time_step_data_point(esdl_id, "BatteryConsumption", simulation_time, consumption_w)
+
         return FullSelfConsumptionOutput(consumption_w)
 
 if __name__ == "__main__":
