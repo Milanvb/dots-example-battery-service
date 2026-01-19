@@ -12,40 +12,63 @@ class ExampleBatteryServiceBase(HelicsSimulationExecutor):
         super().__init__()
 
         
-        # Calculation: full_self_consumption
-        full_self_consumption_inputs = [
+        # Calculation: max_charge_and_discharge
+        max_charge_and_discharge_inputs = [
         
-            SubscriptionDescription(esdl_type="PVInstallation", 
-                                    input_name="potential_active_power", 
-                                    input_unit="W", 
-                                    input_type=h.HelicsDataType.DOUBLE),
-            SubscriptionDescription(esdl_type="EDemand", 
-                                    input_name="active_power", 
-                                    input_unit="W", 
-                                    input_type=h.HelicsDataType.DOUBLE),
         ]
-        full_self_consumption_outputs = [
+        max_charge_and_discharge_outputs = [
         
             PublicationDescription(global_flag=True, 
                                     esdl_type="Battery",
-                                    output_name="active_power",
+                                    output_name="max_charge_active_power",
+                                    output_unit="W", 
+                                    output_type="DOUBLE"),
+            PublicationDescription(global_flag=True, 
+                                    esdl_type="Battery",
+                                    output_name="max_discharge_active_power",
                                     output_unit="W", 
                                     output_type="DOUBLE"),
         ]
-        full_self_consumption_information = HelicsCalculationInformation(
+        max_charge_and_discharge_information = HelicsCalculationInformation(
             time_period_in_seconds=900,
             offset=0, 
             uninterruptible=False, 
             wait_for_current_time_update=False, 
             terminate_on_error=True, 
-            calculation_name="full_self_consumption", 
-            inputs=full_self_consumption_inputs, 
-            outputs=full_self_consumption_outputs, 
-            calculation_function=self.full_self_consumption
+            calculation_name="max_charge_and_discharge", 
+            inputs=max_charge_and_discharge_inputs, 
+            outputs=max_charge_and_discharge_outputs, 
+            calculation_function=self.max_charge_and_discharge
         )
-        self.add_calculation(full_self_consumption_information)
+        self.add_calculation(max_charge_and_discharge_information)
+        # Calculation: charge_battery
+        charge_battery_inputs = [
+        
+            SubscriptionDescription(esdl_type="EConnection", 
+                                    input_name="active_power_to_charge", 
+                                    input_unit="W", 
+                                    input_type=h.HelicsDataType.DOUBLE),
+        ]
+        charge_battery_outputs = [
+        
+        ]
+        charge_battery_information = HelicsCalculationInformation(
+            time_period_in_seconds=900,
+            offset=0, 
+            uninterruptible=False, 
+            wait_for_current_time_update=False, 
+            terminate_on_error=True, 
+            calculation_name="charge_battery", 
+            inputs=charge_battery_inputs, 
+            outputs=charge_battery_outputs, 
+            calculation_function=self.charge_battery
+        )
+        self.add_calculation(charge_battery_information)
 
     
-    def full_self_consumption(self, param_dict : dict, simulation_time : datetime, time_step_number : TimeStepInformation, esdl_id : EsdlId, energy_system : EnergySystem):
+    def max_charge_and_discharge(self, param_dict : dict, simulation_time : datetime, time_step_number : TimeStepInformation, esdl_id : EsdlId, energy_system : EnergySystem):
+        pass
+    
+    def charge_battery(self, param_dict : dict, simulation_time : datetime, time_step_number : TimeStepInformation, esdl_id : EsdlId, energy_system : EnergySystem):
         pass
     

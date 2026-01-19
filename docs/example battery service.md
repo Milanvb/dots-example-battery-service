@@ -6,18 +6,21 @@ The example battery service used in the DOTS workshop
 
 ## Calculations
 
-### full self consumption 
+### max_charge_and_discharge 
 
-test
-#### Input parameters
-|Name            |esdl_type            |data_type            |unit            |description            |
-|----------------|---------------------|---------------------|----------------|-----------------------|
-|potential_active_power|PVInstallation|DOUBLE|W|The potential active power produced by the PV installation for the coming 15 minutes|
-|active_power|EDemand|DOUBLE|W|The amount of active power produced consumed by the baseload in the coming 15 minutes|
+sends the max amount of active power the battery can charge and discharge
 #### Output values
 |Name             |data_type             |unit             |description             |
 |-----------------|----------------------|-----------------|------------------------|
-|active_power|DOUBLE|W|The amount of active power produced or consumed by the Battery|
+|max_charge_active_power|DOUBLE|W|The amount of active power that can be charged by the Battery > 0|
+|max_discharge_active_power|DOUBLE|W|The amount of active power that can be discharged by the Battery < 0|
+### charge_battery 
+
+(dis)-charge the battery with the amount of power supplied, throws an exception when the power exceeds the max (dis)charge power
+#### Input parameters
+|Name            |esdl_type            |data_type            |unit            |description            |
+|----------------|---------------------|---------------------|----------------|-----------------------|
+|active_power_to_charge|EConnection|DOUBLE|W|The amount of active power produced or consumed by the Battery > 0 means charging, < 0 means discharging|
 
 ### Relevant links
 |Link             |description             |

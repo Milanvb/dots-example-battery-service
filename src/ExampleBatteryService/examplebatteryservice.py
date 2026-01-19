@@ -7,60 +7,45 @@ from dots_infrastructure.Logger import LOGGER
 from esdl import EnergySystem
 
 from ExampleBatteryService.example_battery_service_base import ExampleBatteryServiceBase
-from ExampleBatteryService.example_battery_service_dataclasses import FullSelfConsumptionOutput
+from ExampleBatteryService.example_battery_service_dataclasses import MaxChargeAndDischargeOutput
 
 class ExampleBatteryService(ExampleBatteryServiceBase):
 
     def init_calculation_service(self, energy_system: esdl.EnergySystem):
         self.max_capacity : dict[EsdlId, float] = {}
-        self.initial_capacity : dict[EsdlId, float] = {}
+        self.charge_efficiency : dict[EsdlId, float] = {}
+        self.max_charge_rate : dict[EsdlId, float] = {}
+        self.discharge_efficiency : dict[EsdlId, float] = {}
+        self.max_discharge_rate : dict[EsdlId, float] = {}
         self.current_charge : dict[EsdlId, float] = {}
+        self.max_charge_and_discharge_period_seconds = 900
         for esdl_object in energy_system.eAllContents():
             if isinstance(esdl_object, esdl.Battery):
-                self.max_capacity[esdl_object.id] = 3000
-                self.current_charge[esdl_object.id] = self.initial_capacity
+                self.max_capacity[esdl_object.id] = esdl_object.capacity
+                self.current_charge[esdl_object.id] = esdl_object.fillLevel/100 * esdl_object.capacity
+                self.charge_efficiency[esdl_object.id] = esdl_object.chargeEfficiency
+                self.discharge_efficiency[esdl_object.id] = esdl_object.dischargeEfficiency
+                self.max_charge_rate[esdl_object.id] = esdl_object.maxChargeRate
+                self.max_discharge_rate[esdl_object.id] = esdl_object.maxDischargeRate
 
-    def charge_battery(self, to_charge, esdl_id):
-        current_charge = self.current_charge[esdl_id]
-        max_capacity = self.max_capacity[esdl_id]
-        amount_charged = to_charge
-        if current_charge + to_charge > max_capacity:
-            self.current_charge[esdl_id] = self.max_capacity[esdl_id]
-            amount_charged = abs(max_capacity - current_charge)
-        else:
-            self.current_charge[esdl_id] += to_charge
-        return amount_charged
-    
-    def discharge_battery(self, to_discharge, esdl_id):
-        current_charge = self.current_charge[esdl_id]
-        amount_discharged = to_discharge
-        if current_charge - to_discharge > 0:
-            self.current_charge[esdl_id] -= to_discharge
-        else:
-            amount_discharged = current_charge
-            self.current_charge[esdl_id] = 0
-        return amount_discharged
+    def max_charge_and_discharge(self, param_dict : dict, simulation_time : datetime, time_step_number : TimeStepInformation, esdl_id : EsdlId, energy_system : EnergySystem):
+        max_amount_to_charge = self.max_charge_and_discharge_period_seconds * self.max_charge_and_discharge_period_seconds * self.max_charge_rate[esdl_id]
+        max_amount_to_discharge = self.max_charge_and_discharge_period_seconds * self.discharge_efficiency * self.max_charge_rate[esdl_id]
+        if self.current_charge[esdl_id] + max_amount_to_charge > self.max_capacity[esdl_id]:
+            max_amount_to_charge = abs(self.max_capacity[esdl_id] - self.current_charge[esdl_id])
+        if self.current_charge[esdl_id] - max_amount_to_discharge < 0:
+            max_amount_to_discharge = -self.current_charge[esdl_id]
 
-    def full_self_consumption(self, param_dict : dict, simulation_time : datetime, time_step_number : TimeStepInformation, esdl_id : EsdlId, energy_system : EnergySystem):
-        pv_active_power_w = get_single_param_with_name(param_dict, "pv_active_power")
-        demand_active_power_w = get_single_param_with_name(param_dict, "demand_active_power")
-        to_charge_w = pv_active_power_w - demand_active_power_w
-        amount_charged = 0
-        amount_discharged = 0
-        if to_charge_w < 0:
-            amount_discharged = self.discharge_battery(abs(to_charge_w), esdl_id)
-        else:
-            amount_charged = self.charge_battery(to_charge_w, esdl_id)
+        return MaxChargeAndDischargeOutput(max_amount_to_charge, -max_amount_to_discharge)
 
-        consumption_w = 0
-        if amount_charged > 0 and self.current_charge[esdl_id] == self.max_capacity[esdl_id]:
-            consumption_w = pv_active_power_w - demand_active_power_w - amount_charged
-        if amount_discharged > 0 and self.current_charge[esdl_id] == 0:
-            consumption_w = pv_active_power_w - demand_active_power_w + amount_discharged
 
-        self.influx_connector.set_time_step_data_point(esdl_id, "BatteryConsumption", simulation_time, consumption_w)
-
-        return FullSelfConsumptionOutput(consumption_w)
+    def charge_battery(self, param_dict : dict, simulation_time : datetime, time_step_number : TimeStepInformation, esdl_id : EsdlId, energy_system : EnergySystem):
+        amount_to_charge  = get_single_param_with_name(param_dict, "active_power_to_charge")
+        if self.current_charge[esdl_id] + amount_to_charge > self.max_capacity[esdl_id] or self.current_charge[esdl_id] + amount_to_charge < 0:
+            raise ValueError(f"Battery {esdl_id} cannot be charged with {amount_to_charge} W at time {simulation_time}. Current charge: {self.current_charge[esdl_id]} Wh, Max capacity: {self.max_capacity[esdl_id]} Wh")
+        self.current_charge[esdl_id] += amount_to_charge 
+        state_of_charge = (self.current_charge[esdl_id] / self.max_capacity[esdl_id]) * 100
+        self.influx_connector.set_time_step_data_point(esdl_id, "StateOfCharge", simulation_time, state_of_charge)
 
 if __name__ == "__main__":
 

@@ -11,33 +11,42 @@
     ],
     "calculations" : [
         {
-            "name": "full self consumption",
-            "description" : "test",
+            "name": "max_charge_and_discharge",
+            "description" : "sends the max amount of active power the battery can charge and discharge",
+            "time_period_in_seconds" : 900,
+            "offset_in_seconds" : 0,
+            "inputs" : [
+            ],
+            "outputs" : [
+                {
+                    "name" : "max_charge_active_power",
+                    "data_type" : "DOUBLE",
+                    "description" : "The amount of active power that can be charged by the Battery > 0",
+                    "unit" : "W"
+                },
+                {
+                    "name" : "max_discharge_active_power",
+                    "data_type" : "DOUBLE",
+                    "description" : "The amount of active power that can be discharged by the Battery < 0",
+                    "unit" : "W"
+                }
+            ]
+        },
+        {
+            "name": "charge_battery",
+            "description" : "(dis)-charge the battery with the amount of power supplied, throws an exception when the power exceeds the max (dis)charge power",
             "time_period_in_seconds" : 900,
             "offset_in_seconds" : 0,
             "inputs" : [
                 {
-                    "name" : "pv_active_power",
-                    "esdl_type" : "PVInstallation",
+                    "esdl_type" : "EConnection",
+                    "name" : "active_power_to_charge",
                     "data_type" : "DOUBLE",
-                    "description" : "The potential active power produced by the PV installation for the coming 15 minutes",
-                    "unit" : "W"
-                },
-                {
-                    "name" : "demand_active_power",
-                    "esdl_type" : "EDemand",
-                    "data_type" : "DOUBLE",
-                    "description" : "The amount of active power produced consumed by the baseload in the coming 15 minutes",
+                    "description" : "The amount of active power produced or consumed by the Battery > 0 means charging, < 0 means discharging",
                     "unit" : "W"
                 }
             ],
             "outputs" : [
-                {
-                    "name" : "battery_active_power",
-                    "data_type" : "DOUBLE",
-                    "description" : "The amount of active power produced or consumed by the Battery",
-                    "unit" : "W"
-                }
             ]
         }
     ]
