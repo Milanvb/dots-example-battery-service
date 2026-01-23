@@ -35,7 +35,7 @@ class Test(unittest.TestCase):
     def setUp(self):
         CalculationServiceHelperFunctions.get_simulator_configuration_from_environment = simulator_environment_e_connection
         esh = EnergySystemHandler()
-        esh.load_file("test/test.esdl")
+        esh.load_file("test.esdl")
         self.energy_system = esh.get_energy_system()
 
     def test_when_max_charge_and_discharg_are_calculated_correct_values_come_out(self):
