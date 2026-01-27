@@ -1,11 +1,11 @@
-FROM python:3.13
+FROM python:3.14
 
 RUN mkdir /app/
 WORKDIR /app
 
-COPY src/<<INSERT_FOLDER_NAME>> src/<<INSERT_FOLDER_NAME>>
+COPY src/ExampleBatteryService ./src/ExampleBatteryService
 COPY pyproject.toml ./
 COPY README.md ./
-RUN pip install ./
 
-ENTRYPOINT python3 src/<<INSERT_FOLDER_NAME>>/<<INSERT_IMPLEMENTATION_PYTHON_FILENAME>>.py
+RUN pip install ./
+ENTRYPOINT ["python3", "src/ExampleBatteryService/examplebatteryservice.py"]

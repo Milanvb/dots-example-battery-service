@@ -1,63 +1,52 @@
 {
-    "name": "test",
-    "esdl_type" : "EConnection",
-    "description" : "this is a test description",
+    "name": "example battery service",
+    "esdl_type" : "Battery",
+    "description" : "The example battery service used in the DOTS workshop",
     "relevant_links" : [
         {
-            "name" : "test link",
-            "url" : "https://example.com/test",
-            "description" : "this is a test link"
-        },
-        {
-            "name" : "another test link",
-            "url" : "https://example.com/anothertest",
-            "description" : "this is another link"
+            "name" : "Battery ESDL documentation",
+            "url" : "https://energytransition.github.io/#router/doc-content/687474703a2f2f7777772e746e6f2e6e6c2f6573646c/Battery.html",
+            "description" : "Details on the Battery esdl type"
         }
     ],
     "calculations" : [
         {
-            "name": "test calculation",
-            "description" : "test",
+            "name": "max_charge_and_discharge",
+            "description" : "sends the max amount of active power the battery can charge and discharge",
             "time_period_in_seconds" : 900,
             "offset_in_seconds" : 0,
             "inputs" : [
-                {
-                    "name" : "input1",
-                    "esdl_type" : "PVInstallation",
-                    "data_type" : "DOUBLE",
-                    "description" : "input 1 description",
-                    "unit" : "K"
-                }
             ],
             "outputs" : [
                 {
-                    "name" : "output1",
+                    "name" : "max_charge_active_power",
                     "data_type" : "DOUBLE",
-                    "description" : "output 1 description",
+                    "description" : "The amount of active power that can be charged by the Battery > 0",
                     "unit" : "W"
                 },
                 {
-                    "name" : "output2",
+                    "name" : "max_discharge_active_power",
                     "data_type" : "DOUBLE",
-                    "description" : "output 2 description",
+                    "description" : "The amount of active power that can be discharged by the Battery < 0",
                     "unit" : "W"
                 }
             ]
         },
         {
-            "name": "test calculation 2",
-            "description" : "test",
+            "name": "charge_battery",
+            "description" : "(dis)-charge the battery with the amount of power supplied, throws an exception when the power exceeds the max (dis)charge power",
             "time_period_in_seconds" : 900,
-            "offset_in_seconds" : 100,
+            "offset_in_seconds" : 0,
             "inputs" : [
-            ],
-            "outputs" : [
                 {
-                    "name" : "output3",
+                    "esdl_type" : "EConnection",
+                    "name" : "active_power_to_charge",
                     "data_type" : "DOUBLE",
-                    "description" : "output 3 description",
+                    "description" : "The amount of active power produced or consumed by the Battery > 0 means charging, < 0 means discharging",
                     "unit" : "W"
                 }
+            ],
+            "outputs" : [
             ]
         }
     ]
