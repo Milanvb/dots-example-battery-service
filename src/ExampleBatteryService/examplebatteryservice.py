@@ -59,4 +59,5 @@ if __name__ == "__main__":
 
     helics_simulation_executor = ExampleBatteryService()
     helics_simulation_executor.start_simulation()
+    LOGGER.debug("Stopping calculation service")
     helics_simulation_executor.stop_simulation()
