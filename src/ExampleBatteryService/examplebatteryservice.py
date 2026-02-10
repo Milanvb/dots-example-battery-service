@@ -7,7 +7,7 @@ from dots_infrastructure.Logger import LOGGER
 from esdl import EnergySystem
 
 from ExampleBatteryService.example_battery_service_base import ExampleBatteryServiceBase
-from ExampleBatteryService.example_battery_service_dataclasses import MaxChargeAndDischargeOutput
+from ExampleBatteryService.example_battery_service_dataclasses import MaxChargeAndDischargeOutput, SendSocOutput
 
 class ExampleBatteryService(ExampleBatteryServiceBase):
 
@@ -54,6 +54,11 @@ class ExampleBatteryService(ExampleBatteryServiceBase):
         state_of_charge = (self.current_charge[esdl_id] / self.max_capacity[esdl_id]) * 100
         LOGGER.debug(f"Battery {esdl_id} charged with {amount_to_charge} W at time {simulation_time}. New state of charge: {state_of_charge} %")
         self.influx_connector.set_time_step_data_point(esdl_id, "StateOfCharge", simulation_time, state_of_charge)
+
+    
+    def send_soc(self, param_dict : dict, simulation_time : datetime, time_step_number : TimeStepInformation, esdl_id : EsdlId, energy_system : EnergySystem):
+        state_of_charge = (self.current_charge[esdl_id] / self.max_capacity[esdl_id]) * 100
+        return SendSocOutput(state_of_charge)
 
 if __name__ == "__main__":
 

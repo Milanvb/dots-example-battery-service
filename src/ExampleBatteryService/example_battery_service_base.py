@@ -22,12 +22,12 @@ class ExampleBatteryServiceBase(HelicsSimulationExecutor):
                                     esdl_type="Battery",
                                     output_name="max_charge_active_power",
                                     output_unit="W", 
-                                    data_type=h.HelicsDataType.DOUBLE),
+                                    output_type="DOUBLE"),
             PublicationDescription(global_flag=True, 
                                     esdl_type="Battery",
                                     output_name="max_discharge_active_power",
                                     output_unit="W", 
-                                    data_type=h.HelicsDataType.DOUBLE),
+                                    output_type="DOUBLE"),
         ]
         max_charge_and_discharge_information = HelicsCalculationInformation(
             time_period_in_seconds=900,
@@ -64,11 +64,38 @@ class ExampleBatteryServiceBase(HelicsSimulationExecutor):
             calculation_function=self.charge_battery
         )
         self.add_calculation(charge_battery_information)
+        # Calculation: send_soc
+        send_soc_inputs = [
+        
+        ]
+        send_soc_outputs = [
+        
+            PublicationDescription(global_flag=True, 
+                                    esdl_type="Battery",
+                                    output_name="battery_soc",
+                                    output_unit="percentage", 
+                                    output_type="DOUBLE"),
+        ]
+        send_soc_information = HelicsCalculationInformation(
+            time_period_in_seconds=900,
+            offset=0, 
+            uninterruptible=False, 
+            wait_for_current_time_update=False, 
+            terminate_on_error=True, 
+            calculation_name="send_soc", 
+            inputs=send_soc_inputs, 
+            outputs=send_soc_outputs, 
+            calculation_function=self.send_soc
+        )
+        self.add_calculation(send_soc_information)
 
     
     def max_charge_and_discharge(self, param_dict : dict, simulation_time : datetime, time_step_number : TimeStepInformation, esdl_id : EsdlId, energy_system : EnergySystem):
         pass
     
     def charge_battery(self, param_dict : dict, simulation_time : datetime, time_step_number : TimeStepInformation, esdl_id : EsdlId, energy_system : EnergySystem):
+        pass
+    
+    def send_soc(self, param_dict : dict, simulation_time : datetime, time_step_number : TimeStepInformation, esdl_id : EsdlId, energy_system : EnergySystem):
         pass
     
