@@ -22,12 +22,12 @@ class ExampleBatteryServiceBase(HelicsSimulationExecutor):
                                     esdl_type="Battery",
                                     output_name="max_charge_active_power",
                                     output_unit="W", 
-                                    output_type="DOUBLE"),
+                                    data_type="DOUBLE"),
             PublicationDescription(global_flag=True, 
                                     esdl_type="Battery",
                                     output_name="max_discharge_active_power",
                                     output_unit="W", 
-                                    output_type="DOUBLE"),
+                                    data_type="DOUBLE"),
         ]
         max_charge_and_discharge_information = HelicsCalculationInformation(
             time_period_in_seconds=900,
@@ -74,7 +74,7 @@ class ExampleBatteryServiceBase(HelicsSimulationExecutor):
                                     esdl_type="Battery",
                                     output_name="battery_soc",
                                     output_unit="percentage", 
-                                    output_type="DOUBLE"),
+                                    data_type=h.HelicsDataType.DOUBLE),
         ]
         send_soc_information = HelicsCalculationInformation(
             time_period_in_seconds=900,
