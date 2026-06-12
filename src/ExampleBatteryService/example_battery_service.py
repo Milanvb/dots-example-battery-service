@@ -21,7 +21,7 @@ class ExampleBatteryService(ExampleBatteryServiceBase):
         self.max_charge_and_discharge_period_seconds = 900
         for id, esdl_object in self.esdl_obj_mapping.items():
             self.max_capacity[id] = esdl_object.capacity
-            self.current_charge[id] = esdl_object.fillLevel/100 * esdl_object.capacity
+            self.current_charge[id] = esdl_object.fillLevel * esdl_object.capacity
             self.charge_efficiency[id] = esdl_object.chargeEfficiency
             self.discharge_efficiency[id] = esdl_object.dischargeEfficiency
             self.max_charge_rate[id] = esdl_object.maxChargeRate
