@@ -59,8 +59,8 @@
                 {
                     "name" : "battery_soc",
                     "data_type" : "DOUBLE",
-                    "description" : "The state-of-charge of the battery",
-                    "unit" : "percentage"
+                    "description" : "The state-of-charge of the battery in joules",
+                    "unit" : "J"
                 }
             ]
         }

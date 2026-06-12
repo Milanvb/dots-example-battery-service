@@ -27,7 +27,7 @@ sends the state of charge of the battery
 #### Output values
 |Name             |data_type             |unit             |description             |
 |-----------------|----------------------|-----------------|------------------------|
-|battery_soc|DOUBLE|percentage|The state-of-charge of the battery|
+|battery_soc|DOUBLE|J|The state-of-charge of the battery in joules|
 
 ### Relevant links
 |Link             |description             |
