@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - soc_update
     tags:
       - v*
   pull_request:
