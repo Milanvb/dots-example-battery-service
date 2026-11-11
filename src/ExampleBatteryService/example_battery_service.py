@@ -37,7 +37,7 @@ class ExampleBatteryService(ExampleBatteryServiceBase):
             max_amount_to_discharge_joules = -self.current_charge[esdl_id]
 
         max_amount_to_charge_watts = max_amount_to_charge_joules / (self.max_charge_and_discharge_period_seconds * self.charge_efficiency[esdl_id])
-        max_amount_to_discharge_watts = max_amount_to_discharge_joules * self.discharge_efficiency[esdl_id] / self.max_charge_and_discharge_period_second
+        max_amount_to_discharge_watts = max_amount_to_discharge_joules * self.discharge_efficiency[esdl_id] / self.max_charge_and_discharge_period_seconds
 
         if max_amount_to_discharge_watts > 0:
             max_amount_to_discharge_watts = -max_amount_to_discharge_watts
